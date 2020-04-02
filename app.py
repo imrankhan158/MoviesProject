@@ -172,7 +172,7 @@ def top12():
 
 		data.append(d)
 
-	return render_template("the12_movies.html", movie = data, head = head)
+	return render_template("top12_movies.html", movie = data, head = head)
 
 @app.route('/top12/<movie>')
 def top12_movie_details(movie):
@@ -235,7 +235,7 @@ def bot12():
 
 		data.append(d)
 
-	return render_template("the12_movies.html", movie = data, head = head)
+	return render_template("bot12_movies.html", movie = data, head = head)
 
 @app.route('/bottom12/<movie>')
 def bot12_movie_details(movie):
