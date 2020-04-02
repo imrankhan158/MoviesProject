@@ -1,0 +1,28 @@
+
+.link-class:hover {
+    background-color: #f1f1f1;
+}
+
+.btn{
+    align-items: center;
+}
+
+.but{
+    align-content: center;
+}
+
+img{
+    height: 260px;
+}
+
+.card:hover {
+-webkit-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+-moz-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+}
+.card{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}

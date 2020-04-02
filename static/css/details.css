@@ -1,0 +1,29 @@
+
+.link-class:hover {
+    background-color: #f1f1f1;
+}
+
+.btn{
+    align-items: center;
+}
+
+.but{
+    align-content: center;
+}
+/* for details only  */
+.thumbnail:hover {
+    -webkit-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+    box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+}
+.list-group-item:hover{
+    -webkit-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+    box-shadow: -1px 9px 40px -12px rgba(0, 0, 0, 0.75);
+}
+.link{
+    color: black;
+}
+.link:hover{
+    color: red;
+}
