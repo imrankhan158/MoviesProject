@@ -11,3 +11,5 @@ Movies Masti is an appliciation where any user can search the information about 
 4) JS
 5) Bootstrap
 
+enjoy!
+
