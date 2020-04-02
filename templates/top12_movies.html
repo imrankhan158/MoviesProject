@@ -37,11 +37,11 @@
                 <li class="nav-item ">
                     <a class="nav-link" href="  {{url_for('index')}}  ">Movie <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item ">
                     <a class="nav-link" href="  {{url_for('actor')}}  ">Celeb <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item ">
-                    <a class="nav-link" href="  {{url_for('top12')}}  ">Top 12 <span class="sr-only">(current)</span></a>
+                    <a class="nav-link active" href="  {{url_for('top12')}}  ">Top 12 <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item ">
                     <a class="nav-link" href="  {{url_for('bot12')}}  ">Bottom 12 <span class="sr-only">(current)</span></a>
@@ -50,79 +50,43 @@
         </div>
     </nav>
     <!-- navbar ends -->
-
-    <!-- search bar -->
-    <br>
-    <div class="container" style="width:900px;">
-        <h1 align="center" id="heading">Celebrity Search</h1>
-        <br>
-
-        <div align="center">
-            <input type="text" name="search" id="search" class="form-control" placeholder="Search Actor Details" />
-        </div>
-
-        <br>
+    <div class ="container" >
+        <Center>
+            <h1>{{ head }}</h1>
+        </Center>
+        
     </div>
-    <br>
     <div class="container">
         <div id="data" class="row">
             <!-- data here -->
-
+            {% for m in movie %}
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
+                <div class="card">
+                    <img src="{{ m['image'] }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title"> <strong>{{ m['title'] }} {{ m['year'] }}</strong></h5>
+                        <hr>
+                        <p><strong>Rank:</strong> {{ m['rank']}} <br>
+                        <strong>Rating:</strong> {{ m['rating']}}</p>
+                        <div class = "but">
+                            <center><button id="{{ m['id'] }}" type="button" onclick=movieDetails(this.id) class="btn btn-success">More Details</button></center>
+                        </div>    
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
 
     </div>
-    </div>
-
     <script src="  {{url_for('static',filename = 'js/actor.js')}}  "></script>
     <script>
-        // console.log("this is movies app project");
-
-        // imrans work 
-        $(document).ready(function () {
-            var reivew;
-            $.ajaxSetup({ cache: false });
-            $('#search').keyup(function () {
-                $('#result').html('');
-                $('#state').val('');
-                $('#data').html('');
-                var searchField = $('#search').val();
-                // var expression = new RegExp(searchField, "i");
-                $.ajax({
-                    type: 'POST',
-                    url: "{{url_for('actors')}}",
-                    contentType: 'application/json;charset=UTF-8',
-                    data: { 'data': searchField }
-                }).done(function (data) {
-                    reivew = data;
-
-                    $.each(data, function (key, value) {
-                        // $('#result').append('<li class="list-group-item link-class">'+value.title+'</li>');
-                        html = `
-                            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
-                                <div class="card">
-                                    <img src="${value.image}" class="card-img-top" alt="...">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${value.name}</h5>
-                                        <div class = "but">
-                                            <center><button id=${value.id} type="button" onclick=actorDetails(this.id) class="btn btn-success">More Details</button></center>
-                                        </div>    
-                                    </div>
-                                </div>
-                            </div>
-                            `
-                        $('#data').append(html);
-                    });
-                });
-            });
-        });
-        function actorDetails(id) {
+        function movieDetails(id) {
             console.log(id);
-            URL = window.location.href + '/'+`${id}`;
+            URL = window.location.href + '/' + `${id}`;
             window.location.href = URL
             console.log(URL);
         }
-            
     </script>
+</script>
 </body>
-
 </html>

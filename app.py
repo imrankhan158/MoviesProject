@@ -156,7 +156,6 @@ def actor_details(actor):
 def top12():
 	top = moviesDB.get_top250_movies()[0:12]
 
-	
 	head = 'Top 12 movies of 250 all time'
 
 	data = []
