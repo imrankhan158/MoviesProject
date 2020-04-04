@@ -1,10 +1,23 @@
 from flask import Flask, request, render_template, jsonify
 import imdb
+from bs4 import BeautifulSoup
+from urllib.request import urlopen
 
 moviesDB = imdb.IMDb()
 
 app = Flask(__name__)
 
+# normal function  to get the image url 
+def movie_url(m_id):
+	film_id = m_id
+	url = 'http://www.imdb.com/title/tt%s/' % (film_id)
+	soup = BeautifulSoup(urlopen(url).read())
+	links = soup.find_all('div', {'class': 'poster'})
+	if links:
+		image = links[0].find('img')['src']
+	else:
+		image = "static/image/default_movie.jpg"
+	return image
 
 @app.route('/')
 def index():
@@ -159,11 +172,11 @@ def top12():
 	head = 'Top 12 movies of 250 all time'
 
 	data = []
-	for i in top:
-		id = i.movieID
-		movie = moviesDB.get_movie(id)
+
+	for movie in top:
+		id = movie.movieID
 		title = movie.get('title'," ")
-		image =  movie.get('full-size cover url', "static/image/default_movie.jpg")
+		image =  movie_url(id)
 		year =  movie.get('year', " ")
 		rating = movie.get('rating', "N/A")
 		rank = movie.get('top 250 rank',"N/A")
@@ -171,7 +184,7 @@ def top12():
 		d = {'id': id, 'title': title, 'image': image, 'year': year, 'rank' : rank,'rating': rating}
 
 		data.append(d)
-
+	
 	return render_template("top12_movies.html", movie = data, head = head)
 
 @app.route('/top12/<movie>')
@@ -222,11 +235,11 @@ def bot12():
 	top = moviesDB.get_top250_movies()[-12:]
 	head = 'Last 12 movies of 250 all time'
 	data = []
-	for i in top:
-		id = i.movieID
-		movie = moviesDB.get_movie(id)
+	
+	for movie in top:
+		id = movie.movieID
 		title = movie.get('title'," ")
-		image =  movie.get('full-size cover url', "static/image/default_movie.jpg")
+		image =  movie_url(id)
 		year =  movie.get('year', " ")
 		rating = movie.get('rating', "N/A")
 		rank = movie.get('top 250 rank',"N/A")
@@ -234,7 +247,7 @@ def bot12():
 		d = {'id': id, 'title': title, 'image': image, 'year': year, 'rank' : rank,'rating': rating}
 
 		data.append(d)
-
+	
 	return render_template("bot12_movies.html", movie = data, head = head)
 
 @app.route('/bottom12/<movie>')
