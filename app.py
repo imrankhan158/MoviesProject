@@ -172,7 +172,7 @@ def keyword():
 def keywords():
 	re = request.get_data()
 	re = str(re.decode("utf-8"))[5:]
-	keys = moviesDB.search_keyword(re)[0:20]     
+	keys = moviesDB.search_keyword(re)[0:50]     
 	
 	data = []
 	
