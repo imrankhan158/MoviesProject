@@ -23,7 +23,6 @@ def movie_url(m_id):
 def index():
     return render_template("index.html")
 
-
 @app.route('/', methods=['POST'])
 def movie():
 	re = request.get_data()
@@ -164,6 +163,50 @@ def actor_details(actor):
 	}
 
 	return render_template("actor_details.html", actor = d)
+
+@app.route('/keyword')
+def keyword():
+	return render_template("keyword.html")
+
+@app.route('/keyword',methods = ['POST'])
+def keywords():
+	re = request.get_data()
+	re = str(re.decode("utf-8"))[5:]
+	keys = moviesDB.search_keyword(re)      
+	print('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
+	data = []
+	
+	for keyword in keys:
+		title = keyword
+		
+		d = {'title': title}
+
+		if d not in data:
+			data.append(d)
+	
+	return jsonify(data)
+
+@app.route('/keyword', methods=['POST'])
+def movie_keyword():
+	re = request.get_data()
+	re = str(re.decode("utf-8"))[5:]
+	movies = moviesDB.search_movie(re)
+	print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxres id:",re)
+
+	data = []
+	
+	for movie in movies:
+		title = movie['title']
+		id = movie.getID()
+		image = movie.get('full-size cover url', "static/image/default_movie.jpg")
+		if 'nopicture' in image:
+			image = "static/image/default_movie.jpg"
+		d = {'id': id, 'title': title, 'image': image, 'year': movie.get('year',' ') }
+
+		if d not in data:
+			data.append(d)
+
+	return jsonify(data)
 
 @app.route('/top12')
 def top12():

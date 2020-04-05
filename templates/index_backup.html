@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Movies project</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    #result {
+      position: absolute;
+      width: 100%;
+      max-width: 870px;
+      cursor: pointer;
+      overflow-y: auto;
+      max-height: 400px;
+      box-sizing: border-box;
+      z-index: 1001;
+    }
+
+    .link-class:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
+</head>
+
+<body>
+  
+  <br /><br />
+  <div class="container" style="width:900px;">
+    <h1 align="center">Movie Reviewer</h1>
+    <br /><br />
+    <div align="center">
+      <input type="text" name="search" id="search" class="form-control" placeholder="Search Movie Details" />
+    </div>
+    <ul class="list-group" id="result"></ul>
+    <dir id="data"></dir>
+    <br />
+  </div>
+</body>
+
+</html>
+
+<script>
+  $(document).ready(function () {
+    var reivew;
+    $.ajaxSetup({ cache: false });
+    $('#search').keyup(function () {
+      $('#result').html('');
+      $('#state').val('');
+      $('#data').html('');
+      var searchField = $('#search').val();
+      // var expression = new RegExp(searchField, "i");
+      $.ajax({
+        type: 'POST',
+        url: "{{url_for('movie')}}",
+        contentType: 'application/json;charset=UTF-8',
+        data: { 'data': searchField }
+      }).done(function (data) {
+        reivew = data;
+        $.each(data, function (key, value) {
+          // $('#result').append('<li class="list-group-item link-class">'+value.title+'</li>');
+          $('#result').append('<li class="list-group-item link-class"><img src="' + value.image + '" height="40" width="40" class="img-thumbnail" /> ' + value.title + '</li>');
+        });
+      });
+    });
+    $('#result').on('click', 'li', function () {
+      var click_text = $(this).text().split('|');
+      $('#search').val($.trim(click_text[0]));
+      $('#result').html('');
+      console.log($.trim(click_text[0]));
+      var temp = $.trim(click_text[0]);
+      // $('#result').append('<li class="list-group-item link-class">'+click_text+'</li>');
+      $.each(reivew, function (key, value) {
+        // $('#result').append('<li class="list-group-item link-class">'+value.title+'</li>');
+        console.log(value.title)
+        if (value.title == temp) {
+          $('#data').append('<h2>' + value.title + '</h2><br><img src="' + value.image + '" height="100" width="100" class="" />');
+        }
+      });
+      // alert(reivew);
+    });
+  });
+</script>

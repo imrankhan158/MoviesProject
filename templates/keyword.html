@@ -35,14 +35,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item ">
-                    <a class="nav-link active" href="  {{url_for('index')}}  ">Movie <span
-                            class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="  {{url_for('index')}}  ">Movie <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item ">
+                <li class="nav-item active">
                     <a class="nav-link" href="  {{url_for('actor')}}  ">Celeb <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" href="  {{url_for('keyword')}}  ">Keyword <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item ">
                     <a class="nav-link" href="  {{url_for('top12')}}  ">Top 12 <span
@@ -53,7 +49,6 @@
                             class="sr-only">(current)</span></a>
                 </li>
             </ul>
-            </ul>
         </div>
     </nav>
     <!-- navbar ends -->
@@ -61,16 +56,25 @@
     <!-- search bar -->
     <br>
     <div class="container" style="width:900px;">
-        <h1 id="heading">Movie Search</h1>
+        <h1 align="center" id="heading">Keyword Search</h1>
         <br>
 
         <div align="center">
-            <input type="text" name="search" id="search" class="form-control" placeholder="Search Movie Details" />
+            <input type="text" name="search" id="search" class="form-control" placeholder="Search Keywords" />
         </div>
 
         <br>
     </div>
     <br>
+    <div>
+        <p id="result">
+
+        </p>
+        <center>
+            <button id="keyword" type="button" class="btn btn-success" title="Filter">Filter</button>
+        </center>
+
+    </div>
     <div class="container">
         <div id="data" class="row">
             <!-- data here -->
@@ -80,19 +84,49 @@
     </div>
     </div>
 
-    <script src="/static/js/index.js"></script>
+    <script src="  {{url_for('static',filename = 'js/actor.js')}}  "></script>
     <script>
+        // console.log("this is movies app project");
+
+        // imrans work 
         $(document).ready(function () {
             var reivew;
             $.ajaxSetup({ cache: false });
             $('#search').keyup(function () {
+                $('#result').html('');
+                $('#state').val('');
+                var searchField = $('#search').val();
+                
+                $.ajax({
+                    type: 'POST',
+                    url: "{{url_for('keyword')}}",
+                    contentType: 'application/json;charset=UTF-8',
+                    data: { 'data': searchField }
+                }).done(function (data) {
+                    reivew = data;
+
+                    $.each(data, function (key, value) {
+                        $('#result').append('<a class="keyword" href="">' + value.title + '</a> ');
+
+                    });
+                });
+            });
+        });
+
+        // for keyword click
+        $(document).ready(function () {
+            var reivew;
+            $.ajaxSetup({ cache: false });
+            $('#keyword').click(function () {
                 $('#state').val('');
                 $('#data').html('');
                 var searchField = $('#search').val();
-
+                // var searchField = 'sci';
+                event.preventDefault()
+                
                 $.ajax({
                     type: 'POST',
-                    url: " {{url_for('movie')}} ",
+                    url: " {{url_for('movie_keyword')}} ",
                     contentType: 'application/json;charset=UTF-8',
                     data: { 'data': searchField }
                 }).done(function (data) {
@@ -117,9 +151,9 @@
                 });
             });
         });
-        function movieDetails(id) {
+        function actorDetails(id) {
             console.log(id);
-            URL = window.location.href + `${id}`;
+            URL = window.location.href + '/' + `${id}`;
             window.location.href = URL
             console.log(URL);
         }
