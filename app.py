@@ -7,7 +7,7 @@ moviesDB = imdb.IMDb()
 
 app = Flask(__name__)
 
-# normal function  to get the image url 
+# normal function  to get the image url using beautiful soup
 def movie_url(m_id):
 	film_id = m_id
 	url = 'http://www.imdb.com/title/tt%s/' % (film_id)
@@ -172,26 +172,23 @@ def keyword():
 def keywords():
 	re = request.get_data()
 	re = str(re.decode("utf-8"))[5:]
-	keys = moviesDB.search_keyword(re)      
-	print('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
+	keys = moviesDB.search_keyword(re)[0:20]     
+	
 	data = []
 	
 	for keyword in keys:
-		title = keyword
-		
+		title = keyword	
 		d = {'title': title}
-
 		if d not in data:
 			data.append(d)
 	
 	return jsonify(data)
 
-@app.route('/keyword', methods=['POST'])
+@app.route('/keyword/movie', methods=['POST'])
 def movie_keyword():
 	re = request.get_data()
 	re = str(re.decode("utf-8"))[5:]
 	movies = moviesDB.search_movie(re)
-	print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxres id:",re)
 
 	data = []
 	
@@ -207,6 +204,50 @@ def movie_keyword():
 			data.append(d)
 
 	return jsonify(data)
+
+@app.route('/keyword/<movie>')
+def key_movie(movie):
+
+	movie_d = moviesDB.get_movie(movie)
+
+	if 'box office' in movie_d.keys():
+		budget = movie_d['box office'].get('Budget','Data Not Available')
+		boxoffice = movie_d['box office'].get('Cumulative Worldwide Gross','Data Not Available')
+	else:
+		budget = 'Data Not Available'
+		boxoffice = 'Data Not Available'
+
+	if 'directors' in movie_d.keys():
+		directors = movie_d['directors']
+	elif 'writer' in movie_d.keys():
+		directors =  movie_d['writer']
+	else:
+		directors = moviesDB.get_movie('4154796')['directors']
+
+	if 'cast' in movie_d.keys():
+		cast = movie_d['cast'][0:10]
+	else:
+		cast = moviesDB.get_movie('4154796')['cast'][0:1]
+
+	d = {'id': movie, 
+	'title': movie_d['title'], 
+	'image': movie_d.get('full-size cover url', "static/image/default_movie.jpg"), 
+	'year': str(movie_d.get('year'," ")),
+	'cast':cast ,
+	'genres':movie_d['genres'],
+	'runtime': movie_d.get('runtime','Data Not Available'),
+	'budget': budget,
+	'boxoffice': boxoffice,
+	'rating': movie_d.get('rating','Data Not Available'),
+	'votes': movie_d.get('votes','Data Not Available'),
+	'directors': directors,
+	'lang': movie_d.get('languages',{'Data Not Available'}),
+	'plot': movie_d.get('plot',{'Data Not Available'}),
+	'imdb':'https://www.imdb.com/title/tt'+ movie +'/'
+	}
+
+	return render_template("movie_details.html", movie = d)
+
 
 @app.route('/top12')
 def top12():

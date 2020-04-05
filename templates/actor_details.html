@@ -40,10 +40,19 @@
                     <a class="nav-link" href="  {{url_for('actor')}}  ">Celeb <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item ">
-                    <a class="nav-link" href="  {{url_for('top12')}}  ">Top 12 <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="  {{url_for('keyword')}}  ">Keyword <span
+                            class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item ">
-                    <a class="nav-link" href="  {{url_for('bot12')}}  ">Bottom 12 <span class="sr-only">(current)</span></a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Tops
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="  {{url_for('top12')}}  ">Top 12 Movies</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="  {{url_for('bot12')}}  ">Bottom 12 Movies</a>
+                    </div>
                 </li>
             </ul>
         </div>

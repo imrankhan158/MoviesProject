@@ -22,6 +22,15 @@
         crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="{{url_for('static',filename = 'css/index.css')}}">
+    <style>
+        .link {
+            color: black;
+        }
+
+        .link:hover {
+            color: red;
+        }
+    </style>
 
 </head>
 
@@ -37,16 +46,23 @@
                 <li class="nav-item ">
                     <a class="nav-link" href="  {{url_for('index')}}  ">Movie <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="  {{url_for('actor')}}  ">Celeb <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item ">
-                    <a class="nav-link" href="  {{url_for('top12')}}  ">Top 12 <span
+                <li class="nav-item active">
+                    <a class="nav-link" href="  {{url_for('keyword')}}  ">Keyword <span
                             class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item ">
-                    <a class="nav-link" href="  {{url_for('bot12')}}  ">Bottom 12 <span
-                            class="sr-only">(current)</span></a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Tops
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="  {{url_for('top12')}}  ">Top 12 Movies</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="  {{url_for('bot12')}}  ">Bottom 12 Movies</a>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -67,12 +83,12 @@
     </div>
     <br>
     <div>
-        <p id="result">
+        <div class="container">
+            <div id="result" class="row">
+                <!-- data here -->
 
-        </p>
-        <center>
-            <button id="keyword" type="button" class="btn btn-success" title="Filter">Filter</button>
-        </center>
+            </div>
+        </div>
 
     </div>
     <div class="container">
@@ -86,9 +102,6 @@
 
     <script src="  {{url_for('static',filename = 'js/actor.js')}}  "></script>
     <script>
-        // console.log("this is movies app project");
-
-        // imrans work 
         $(document).ready(function () {
             var reivew;
             $.ajaxSetup({ cache: false });
@@ -96,7 +109,7 @@
                 $('#result').html('');
                 $('#state').val('');
                 var searchField = $('#search').val();
-                
+
                 $.ajax({
                     type: 'POST',
                     url: "{{url_for('keyword')}}",
@@ -106,53 +119,56 @@
                     reivew = data;
 
                     $.each(data, function (key, value) {
-                        $('#result').append('<a class="keyword" href="">' + value.title + '</a> ');
+                        html = `
+                        <div class="col-lg-1 col-md-3 col-sm-4 col-6 mb-4">
+                            <a class="link" id=${value.title} class="keyword" onclick="keyword(this.id)" > ${value.title} </a> 
+                        </div>
+                        `
+                        $('#result').append(html);
 
                     });
                 });
             });
         });
 
-        // for keyword click
-        $(document).ready(function () {
+        function keyword(id) {
             var reivew;
-            $.ajaxSetup({ cache: false });
-            $('#keyword').click(function () {
-                $('#state').val('');
-                $('#data').html('');
-                var searchField = $('#search').val();
-                // var searchField = 'sci';
-                event.preventDefault()
-                
-                $.ajax({
-                    type: 'POST',
-                    url: " {{url_for('movie_keyword')}} ",
-                    contentType: 'application/json;charset=UTF-8',
-                    data: { 'data': searchField }
-                }).done(function (data) {
-                    reivew = data;
+            var keyword = id;
 
-                    $.each(data, function (key, value) {
-                        html = `
-                            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
-                                <div class="card">
-                                    <img src="${value.image}" class="card-img-top" alt="${value.title}" title="${value.title}">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${value.title} ${value.year}</h5>
-                                        <div class = "but">
-                                            <center><button id=${value.id} type="button" onclick=movieDetails(this.id) class="btn btn-success" title="More details">More Details</button></center>
-                                        </div>    
-                                    </div>
+            console.log('print', keyword);
+            var d = document.getElementById('result');
+            d.innerHTML = '';
+            $.ajax({
+                type: 'POST',
+                url: " {{url_for('movie_keyword')}} ",
+                contentType: 'application/json;charset=UTF-8',
+                data: { 'data': keyword }
+            }).done(function (data) {
+                reivew = data;
+
+                $.each(data, function (key, value) {
+                    html = `
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
+                            <div class="card">
+                                <img src="${value.image}" class="card-img-top" alt="${value.title}" title="${value.title}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${value.title} ${value.year}</h5>
+                                    <div class = "but">
+                                        <center><button id=${value.id} type="button" onclick=movieDetails(this.id) class="btn btn-success" title="More details">More Details</button></center>
+                                    </div>    
                                 </div>
                             </div>
-                            `
-                        $('#data').append(html);
-                    });
+                        </div>
+                        `
+
+                    $('#result').append(html);
                 });
             });
-        });
-        function actorDetails(id) {
+        }
+
+        function movieDetails(id) {
             console.log(id);
+
             URL = window.location.href + '/' + `${id}`;
             window.location.href = URL
             console.log(URL);
